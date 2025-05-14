@@ -1,0 +1,88 @@
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    image: frontend-app:latest
+    container_name: frontend-container
+    restart: unless-stopped
+    networks:
+      - frontend-network
+      - internal-network
+    ports:
+      - "80:80"
+    environment:
+      - VUE_APP_API_URL=http://backend:8081
+    depends_on:
+      backend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/momo-store/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+        reservations:
+          cpus: '0.1'
+          memory: 128M
+    profiles:
+      - dev
+      - prod
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    image: backend-app:latest
+    container_name: backend-container
+    restart: on-failure
+    volumes:
+      - backend-data:/app/data:rw
+    environment:
+      - PORT=8081
+      - LOG_LEVEL=info
+      - ENVIRONMENT=production
+    networks:
+      - backend-network
+      - internal-network
+    expose:
+      - "8081"
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "http://localhost:8081/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: '0.7'
+          memory: 512M
+        reservations:
+          cpus: '0.2'
+          memory: 256M
+    profiles:
+      - dev
+      - prod
+
+networks:
+  frontend-network:
+    driver: bridge
+  backend-network:
+    driver: bridge
+  internal-network:
+    driver: bridge
+    internal: true
+
+volumes:
+  backend-data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./backend-data
