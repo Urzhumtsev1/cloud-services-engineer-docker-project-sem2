@@ -40,10 +40,6 @@ services:
     image: backend-app:latest
     container_name: backend-container
     restart: on-failure
-    environment:
-      - PORT=8081
-      - LOG_LEVEL=info
-      - ENVIRONMENT=production
     networks:
       - internal-network
     healthcheck:
