@@ -7,7 +7,7 @@ services:
     container_name: frontend-container
     restart: unless-stopped
     networks:
-      - frontend-network
+      - public-network
       - internal-network
     ports:
       - "80:80"
@@ -45,7 +45,6 @@ services:
       - LOG_LEVEL=info
       - ENVIRONMENT=production
     networks:
-      - backend-network
       - internal-network
     healthcheck:
       test: ["CMD", "wget", "--spider", "http://localhost:8081/health"]
@@ -63,9 +62,7 @@ services:
           memory: 256M
 
 networks:
-  frontend-network:
-    driver: bridge
-  backend-network:
+  public-network:
     driver: bridge
   internal-network:
     driver: bridge
