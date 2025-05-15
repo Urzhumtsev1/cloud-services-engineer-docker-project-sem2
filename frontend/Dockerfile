@@ -24,6 +24,8 @@ RUN npm run build && \
 # Этап запуска приложения
 FROM nginx:1.25-alpine
 
+RUN apk update && apk upgrade
+
 # Создаем пользователя
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 
