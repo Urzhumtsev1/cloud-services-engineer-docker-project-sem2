@@ -24,6 +24,10 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
+    cap_drop:
+      - all
+    security_opt:
+      - no-new-privileges:true
     deploy:
       resources:
         limits:
@@ -48,6 +52,10 @@ services:
       timeout: 5s
       retries: 5
       start_period: 10s
+    cap_drop:
+      - all
+    security_opt:
+      - no-new-privileges:true
     deploy:
       resources:
         limits:
