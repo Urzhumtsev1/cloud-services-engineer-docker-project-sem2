@@ -1,3 +1,12 @@
+# Запустить проект
+
+```bash
+docker-compose up -d
+```
+
+- Фронт: http://localhost/momo-store/
+- Бэк: http://localhost:8081
+
 # Бэкенд-часть приложения
 
 ## Описание

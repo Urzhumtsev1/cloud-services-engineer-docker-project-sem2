@@ -1,5 +1,5 @@
 # Этап сборки
-FROM node:16-alpine AS builder
+FROM node:18-alpine AS builder
 
 # Создаем пользователя
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup
@@ -17,11 +17,14 @@ RUN npm ci --no-audit --no-fund
 COPY . .
 
 # Сборка приложения
+ENV NODE_OPTIONS=--openssl-legacy-provider
 RUN npm run build && \
     chown -R appuser:appgroup /app/dist
 
 # Этап запуска приложения
-FROM nginx:stable-alpine
+FROM nginx:1.25-alpine
+
+RUN apk update && apk upgrade
 
 # Создаем пользователя
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup
@@ -49,6 +52,10 @@ USER appuser
 
 # Открытие порта
 EXPOSE 80
+
+# Проверка работоспособности приложения
+HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
+CMD curl -f http://localhost/momo-store/ || exit 1
 
 # Запуск nginx в режиме переднего плана
 CMD ["nginx", "-g", "daemon off;"]
