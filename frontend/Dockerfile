@@ -22,7 +22,7 @@ RUN npm run build && \
     chown -R appuser:appgroup /app/dist
 
 # Этап запуска приложения
-FROM nginx:stable-alpine
+FROM nginx:1.25-alpine
 
 # Создаем пользователя
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup
