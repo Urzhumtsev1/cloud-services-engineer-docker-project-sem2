@@ -1,5 +1,5 @@
 # Этап сборки
-FROM node:16-alpine AS builder
+FROM node:18-alpine AS builder
 
 # Создаем пользователя
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup
@@ -17,6 +17,7 @@ RUN npm ci --no-audit --no-fund
 COPY . .
 
 # Сборка приложения
+ENV NODE_OPTIONS=--openssl-legacy-provider
 RUN npm run build && \
     chown -R appuser:appgroup /app/dist
 
