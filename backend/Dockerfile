@@ -1,5 +1,5 @@
 # Этап 1: Сборка приложения
-FROM golang:1.17-alpine AS builder
+FROM golang:1.22.7-alpine AS builder
 
 # Установка необходимых инструментов для сборки
 RUN apk add --no-cache git
@@ -20,7 +20,7 @@ COPY . .
 RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -ldflags="-w -s" -o /go/bin/app ./cmd/api
 
 # Этап 2: Создание финального образа
-FROM alpine:3.16
+FROM alpine:3.18
 
 # Установка сертификатов CA для HTTPS запросов
 RUN apk --no-cache add ca-certificates && \
