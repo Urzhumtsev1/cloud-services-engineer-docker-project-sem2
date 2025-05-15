@@ -53,5 +53,9 @@ USER appuser
 # Открытие порта
 EXPOSE 80
 
+# Проверка работоспособности приложения
+HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
+CMD curl -f http://localhost/momo-store/ || exit 1
+
 # Запуск nginx в режиме переднего плана
 CMD ["nginx", "-g", "daemon off;"]
