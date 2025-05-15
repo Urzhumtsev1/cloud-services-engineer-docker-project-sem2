@@ -64,6 +64,7 @@ services:
         reservations:
           cpus: '0.2'
           memory: 256M
+    read_only: true
 
 networks:
   public-network:
